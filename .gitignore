@@ -1,0 +1,6 @@
+*.json
+*.pyc
+.idea
+*~
+*.w2v
+*.txt
