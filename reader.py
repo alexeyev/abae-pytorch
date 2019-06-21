@@ -3,12 +3,13 @@ import numpy as np
 from sklearn.cluster.k_means_ import MiniBatchKMeans
 
 
-def read_data_batches(path, batch_size=50):
+def read_data_batches(path, batch_size=50, minlength=5):
     batch = []
 
     for line in open(path):
-        if line.strip():
-            batch.append(line.strip().split())
+        line = line.strip().split()
+        if len(line) >= minlength:
+            batch.append(line)
             if len(batch) >= batch_size:
                 yield batch
                 batch = []
@@ -38,10 +39,10 @@ def get_w2v(path):
 
 def read_data_tensors(path, word_vectors_path=None,
                       batch_size=50, vocabulary=None,
-                      maxlen=100, pad_value=0):
+                      maxlen=100, pad_value=0, minsentlength=5):
     w2v_model = get_w2v(word_vectors_path)
 
-    for batch in read_data_batches(path, batch_size):
+    for batch in read_data_batches(path, batch_size, minsentlength):
         batch_vecs = []
         batch_texts = []
 
@@ -54,6 +55,7 @@ def read_data_tensors(path, word_vectors_path=None,
 
 
 def get_centroids(w2v_model, aspects_count):
+
     km = MiniBatchKMeans(n_clusters=aspects_count, verbose=0, n_init=100)
     m = []
 
@@ -73,8 +75,5 @@ def get_centroids(w2v_model, aspects_count):
 
 if __name__ == "__main__":
 
-    for b in read_data_tensors("reviews_electronics_5", "dev", batch_size=3):
-        print(len(b), len(b[0]), b)
-
-    for b in read_data_tensors("reviews_electronics_5", "dev", batch_size=3):
-        print(b.shape, b)
+    for b in read_data_tensors("reviews_Electronics_5.json.txt", "word_vectors/reviews_Electronics_5.json.txt.w2v", batch_size=3):
+        print(b[0].shape, b[1][:2])

@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 import torch
+from torch.nn import init
 from torch.nn.parameter import Parameter
-
-from reader import read_data_tensors, get_w2v, get_centroids
 
 
 class SelfAttention(torch.nn.Module):
@@ -11,6 +10,7 @@ class SelfAttention(torch.nn.Module):
         self.wv_dim = wv_dim
         self.maxlen = maxlen
         self.M = Parameter(torch.Tensor(wv_dim, wv_dim))
+        init.kaiming_uniform(self.M.data)
         self.attention_softmax = torch.nn.Softmax()
         # self.reset_parameters()
 
@@ -70,28 +70,31 @@ class ABAE(torch.nn.Module):
         recovered_emb = torch.matmul(self.aspects_embeddings, aspects_importances.unsqueeze(2)).squeeze()
 
         reconstruction_triplet_loss = self._reconstruction_loss(weighted_text_emb,
-                                                                 recovered_emb,
-                                                                 averaged_negative_samples)
+                                                                recovered_emb,
+                                                                averaged_negative_samples)
 
         max_margin = torch.max(reconstruction_triplet_loss, torch.zeros_like(reconstruction_triplet_loss))
 
-        return max_margin + self.ortho * self.ortho_regularizer()
+        return self.ortho * self.ortho_regularizer() + max_margin
 
     def _reconstruction_loss(self, text_emb, recovered_emb, averaged_negative_emb):
         positive_dot_products = torch.matmul(text_emb.unsqueeze(1), recovered_emb.unsqueeze(2)).squeeze()
         negative_dot_products = torch.matmul(averaged_negative_emb, recovered_emb.unsqueeze(2)).squeeze()
 
-        sum_negative_scalars = torch.sum(negative_dot_products, dim=1)
-        reconstruction_triplet_loss = 1 - positive_dot_products + sum_negative_scalars
+        sum_negative_dot = torch.sum(negative_dot_products, dim=1)
+
+        reconstruction_triplet_loss = 1 - positive_dot_products + sum_negative_dot
 
         return reconstruction_triplet_loss
 
     def ortho_regularizer(self):
         return torch.norm(
-            torch.matmul(self.aspects_embeddings.t(), self.aspects_embeddings) - torch.eye(self.asp_count))
+            torch.matmul(self.aspects_embeddings.t(), self.aspects_embeddings) \
+            - torch.eye(self.asp_count))
 
     def get_aspects_importances(self, text_embeddings):
         attention_weights = self.attention(text_embeddings)
+        # print("attention:", attention_weights)
         weighted_text_emb = torch.matmul(attention_weights.unsqueeze(1), text_embeddings).squeeze()
         raw_importances = self.linear_transform(weighted_text_emb)
         aspects_importances = self.softmax_aspects(raw_importances)

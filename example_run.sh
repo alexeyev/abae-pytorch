@@ -8,5 +8,5 @@
 
 ### data prepared, training word vectors
 
-python3 word2vec.py reviews_Electronics_5.json.txt
+#python3 word2vec.py reviews_Electronics_5.json.txt
 python3 main.py

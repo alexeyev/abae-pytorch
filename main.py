@@ -24,7 +24,7 @@ if __name__ == "__main__":
                  init_aspects_matrix=get_centroids(get_w2v(w2v_path), aspects_count=ASPECTS))
     print(model)
 
-    criterion = torch.nn.MSELoss(reduction='sum')
+    criterion = torch.nn.MSELoss(reduction="sum")
     optimizer = torch.optim.Adam(model.parameters())
 
     for t in range(scans):
@@ -34,11 +34,16 @@ if __name__ == "__main__":
             x = torch.from_numpy(x)
             negative_samples = torch.stack(tuple([x[torch.randperm(x.shape[0])[:neg_number]] for _ in range(BATCH)]))
 
+            # prediction
             y_pred = model(x, negative_samples)
+
+            # prediction
             loss = criterion(y_pred, y)
 
             optimizer.zero_grad()
+
             loss.backward()
+
             optimizer.step()
 
             if item_number % 100 == 0:
