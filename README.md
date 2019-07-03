@@ -4,14 +4,17 @@ Yet another PyTorch implementation of the model described in the paper [**An Uns
 
 ## Example
 
-`
+```
     wget http://snap.stanford.edu/data/amazon/productGraph/categoryFiles/reviews_Electronics_5.json.gz
+    
     gunzip reviews_Electronics_5.json.gz
+    
     python3 custom_format_converter.py reviews_Electronics_5.json
-`
-    Then we need to train the word vectors:
-`
+```
 
+    Then we need to train the word vectors:
+
+`
 python3 word2vec.py reviews_Electronics_5.json.txt
 `
 And run
