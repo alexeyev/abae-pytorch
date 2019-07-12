@@ -53,6 +53,7 @@ I acknowledge the implementation is raw, code modification requests and issues a
 
 ## TODOs
 
+* Decomposition of the model into smaller objects
 * Evaluation: PMI, NPMI, LCP, L1/L2/coord/cosine (Nikolenko SIGIR'16), ...
 * Aspects prediction on text + visualization
 * Saving the model, aspects, etc.
