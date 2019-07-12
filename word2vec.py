@@ -22,28 +22,30 @@ def main(path):
     # model.wv.save_word2vec_format("word_vectors/" + domain + ".txt", binary=False)
 
 
-if len(sys.argv) > 1:
-    path = sys.argv[1]
-else:
-    path = "reviews_Electronics_5.json.txt"
+if __name__ == "__main__":
 
-try:
-    import os
-
-    os.mkdir("word_vectors/")
-except:
-    pass
-
-print("Training w2v on dataset", path)
-
-# main(path)
-
-print("Training done.")
-
-model = gensim.models.Word2Vec.load("word_vectors/" + path + ".w2v")
-
-for word in ["he", "love", "looks", "buy", "laptop"]:
-    if word in model.wv.vocab:
-        print(word, [w for w, c in model.wv.similar_by_word(word=word)])
+    if len(sys.argv) > 1:
+        path = sys.argv[1]
     else:
-        print(word, "not in vocab")
+        path = "reviews_Electronics_5.json.txt"
+
+    try:
+        import os
+
+        os.mkdir("word_vectors/")
+    except:
+        pass
+
+    print("Training w2v on dataset", path)
+
+    # main(path)
+
+    print("Training done.")
+
+    model = gensim.models.Word2Vec.load("word_vectors/" + path + ".w2v")
+
+    for word in ["he", "love", "looks", "buy", "laptop"]:
+        if word in model.wv.vocab:
+            print(word, [w for w, c in model.wv.similar_by_word(word=word)])
+        else:
+            print(word, "not in vocab")

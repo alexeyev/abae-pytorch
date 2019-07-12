@@ -101,10 +101,10 @@ class ABAE(torch.nn.Module):
 
         return attention_weights, aspects_importances, weighted_text_emb
 
-    def get_aspect_words(self, w2v_model):
+    def get_aspect_words(self, w2v_model, topn=15):
         words = []
 
         for row in self.aspects_embeddings.t().detach().numpy():
-            words.append([w for w, dist in w2v_model.similar_by_vector(row)[:10]])
+            words.append([w for w, dist in w2v_model.similar_by_vector(row)[:topn]])
 
         return words
