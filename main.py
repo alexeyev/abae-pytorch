@@ -71,7 +71,9 @@ if __name__ == "__main__":
 
         for item_number, (x, texts) in enumerate(data_iterator):
 
+            print(x.shape)
             x = torch.from_numpy(x)
+
 
             # extracting bad samples from the very same batch; not sure if this is OK, so todo
             negative_samples = torch.stack(

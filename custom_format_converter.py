@@ -17,9 +17,8 @@ def lemmatize(w):
     return lemmatizer.lemmatize(w)
 
 
-def read_amazon_format(path):
-
-    with open(path + ".txt", "w+") as wf:
+def read_amazon_format(path, sentence=True):
+    with open(path + ("" if sentence else "-full_text") + ".txt", "w+") as wf:
 
         for line in tqdm(open(path)):
             text = json.loads(line.strip())["reviewText"].replace("\n", " ")
@@ -29,7 +28,11 @@ def read_amazon_format(path):
                                     for s in tokenized_sentences]
 
             for sentence in lemmatized_sentences:
-                wf.write(" ".join(sentence) + "\n")
+                wf.write(" ".join(sentence) + "\n" if sentence else " ")
+
+            if not sentence:
+                wf.write("\n")
+
 
 if __name__ == "__main__":
     import sys
@@ -39,4 +42,4 @@ if __name__ == "__main__":
     else:
         path = "reviews_Electronics_5.json"
 
-    read_amazon_format(sys.argv[1])
+    read_amazon_format(path, sentence=False)

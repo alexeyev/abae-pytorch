@@ -9,4 +9,4 @@
 ### data prepared, training word vectors
 
 #python3 word2vec.py reviews_Electronics_5.json.txt
-python3 main.py
+python3 main.py -as 30 -d reviews_Electronics_5.json.txt
