@@ -4,6 +4,8 @@ Yet another PyTorch implementation of the model described in the paper [**An Uns
 
 ## Example
 
+Let's get some data:
+
 ```
     wget http://snap.stanford.edu/data/amazon/productGraph/categoryFiles/reviews_Electronics_5.json.gz
     gunzip reviews_Electronics_5.json.gz    
@@ -53,7 +55,6 @@ I acknowledge the implementation is raw, code modification requests and issues a
 
 ## TODOs
 
-* Decomposition of the model into smaller objects
 * Evaluation: PMI, NPMI, LCP, L1/L2/coord/cosine (Nikolenko SIGIR'16), ...
 * Aspects prediction on text + visualization
 * Saving the model, aspects, etc.
