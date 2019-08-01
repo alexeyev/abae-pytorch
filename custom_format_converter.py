@@ -18,7 +18,7 @@ def lemmatize(w):
     return lemmatizer.lemmatize(w)
 
 
-def read_amazon_format(path, sentence=True):
+def read_amazon_format(path, sentence=False):
     with open(path + ("" if sentence else "-full_text") + ".txt", "w+") as wf:
 
         for line in tqdm(open(path)):
