@@ -17,7 +17,7 @@ Then we need to train the word vectors:
 ```
 python3 word2vec.py reviews_Electronics_5.json.txt
 ```
-And run
+And run 
 
 ```
 usage: main.py [-h] [--word-vectors-path <str>] [--batch-size BATCH_SIZE]
@@ -50,6 +50,8 @@ optional arguments:
                         clipped if longer
 
 ```
+
+For a working example of a whole pipeline please refer to `example_run.sh` 
 
 I acknowledge the implementation is raw, code modification requests and issues are welcome.
 

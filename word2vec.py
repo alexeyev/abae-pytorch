@@ -40,7 +40,7 @@ if __name__ == "__main__":
 
     print("Training w2v on dataset", path)
 
-    # main(path)
+    main(path)
 
     print("Training done.")
 
