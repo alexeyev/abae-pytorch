@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import numpy as np
 import torch
 from torch.nn import init
 from torch.nn.parameter import Parameter
@@ -8,9 +9,13 @@ class SelfAttention(torch.nn.Module):
     def __init__(self, wv_dim, maxlen):
         super(SelfAttention, self).__init__()
         self.wv_dim = wv_dim
+
+        # max sentence length -- batch 2nd dim size
         self.maxlen = maxlen
         self.M = Parameter(torch.Tensor(wv_dim, wv_dim))
         init.kaiming_uniform(self.M.data)
+
+        # softmax for attending to wod vectors
         self.attention_softmax = torch.nn.Softmax()
 
     def forward(self, input_embeddings):
@@ -38,6 +43,7 @@ class ABAE(torch.nn.Module):
         https://aclweb.org/anthology/papers/P/P17/P17-1036/
 
     """
+
     def __init__(self, wv_dim=200, asp_count=30, ortho_reg=0.1, maxlen=201, init_aspects_matrix=None):
         """
         Initializing the model
@@ -69,24 +75,38 @@ class ABAE(torch.nn.Module):
             Takes embeddings of a sentence as input, returns attention weights
         """
 
+        # compute attention scores, looking at text embeddings average
         attention_weights = self.attention(text_embeddings)
-        weighted_text_emb = torch.matmul(attention_weights.unsqueeze(1), text_embeddings).squeeze()
+
+        # multiplying text embeddings by attention scores -- and summing
+        # (matmul: we sum every word embedding's coordinate with attention weights)
+        weighted_text_emb = torch.matmul(attention_weights.unsqueeze(1), # (batch, 1, sentence)
+                                         text_embeddings                 # (batch, sentence, wv_dim)
+                                         ).squeeze()
+
+        # encoding with a simple feed-forward layer (wv_dim) -> (aspects_count)
         raw_importances = self.linear_transform(weighted_text_emb)
+
+        # computing 'aspects distribution in a sentence'
         aspects_importances = self.softmax_aspects(raw_importances)
 
         return attention_weights, aspects_importances, weighted_text_emb
 
     def forward(self, text_embeddings, negative_samples_texts):
 
+        # negative samples are averaged
         averaged_negative_samples = torch.mean(negative_samples_texts, dim=2)
 
-        attention_weights, aspects_importances, weighted_text_emb = self.get_aspects_importances(text_embeddings)
+        # encoding: words embeddings -> sentence embedding, aspects importances
+        _, aspects_importances, weighted_text_emb = self.get_aspects_importances(text_embeddings)
+
+        # decoding: aspects embeddings matrix, aspects_importances -> recovered sentence embedding
         recovered_emb = torch.matmul(self.aspects_embeddings, aspects_importances.unsqueeze(2)).squeeze()
 
+        # loss
         reconstruction_triplet_loss = ABAE._reconstruction_loss(weighted_text_emb,
                                                                 recovered_emb,
                                                                 averaged_negative_samples)
-
         max_margin = torch.max(reconstruction_triplet_loss, torch.zeros_like(reconstruction_triplet_loss))
 
         return self.ortho * self._ortho_regularizer() + max_margin
@@ -109,7 +129,17 @@ class ABAE(torch.nn.Module):
     def get_aspect_words(self, w2v_model, topn=15):
         words = []
 
-        for row in self.aspects_embeddings.t().detach().numpy():
-            words.append([w for w, dist in w2v_model.similar_by_vector(row)[:topn]])
+        # getting aspects embeddings
+        aspects = self.aspects_embeddings.detach().numpy()
+
+        # getting scalar products of word embeddings and aspect embeddings;
+        # to obtain the ``probabilities'', one should also apply softmax
+        words_scores = w2v_model.wv.syn0.dot(aspects)
+
+        for row in range(aspects.shape[1]):
+            argmax_scalar_products = np.argsort(- words_scores[:, row])[:topn]
+            # print([w2v_model.wv.index2word[i] for i in argmax_scalar_products])
+            # print([w for w, dist in w2v_model.similar_by_vector(aspects.T[row])[:topn]])
+            words.append([w2v_model.wv.index2word[i] for i in argmax_scalar_products])
 
         return words

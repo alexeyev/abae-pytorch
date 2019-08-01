@@ -1,8 +1,7 @@
+# -*- coding: utf-8 -*-
 import torch
 from model import ABAE
 from reader import get_centroids, get_w2v, read_data_tensors
-
-# todo: args conf
 
 
 if __name__ == "__main__":
@@ -54,26 +53,32 @@ if __name__ == "__main__":
     criterion = torch.nn.MSELoss(reduction="sum")
 
     optimizer = None
+    scheduler = None
+
+    # if args.optimizer == "cycsgd":
+    #     optimizer = torch.optim.SGD(model.parameters(), lr=0.05, momentum=0.9)
+    #     scheduler = torch.optim.lr_scheduler.CyclicLR(optimizer, base_lr=1e-5, max_lr=0.05, mode="triangular2")
+    # elif args.optimizer == "adam":
 
     if args.optimizer == "adam":
         optimizer = torch.optim.Adam(model.parameters())
-    elif args.optmizer == "sgd":
-        optimizer = torch.optim.SGD(model.parameters())
-    elif args.optmizer == "adagrad":
+    elif args.optimizer == "sgd":
+        optimizer = torch.optim.SGD(model.parameters(), lr=0.05)
+    elif args.optimizer == "adagrad":
         optimizer = torch.optim.Adagrad(model.parameters())
     else:
-        raise Exception("Optimizer '%s' not supported" % args.optmizer)
+        raise Exception("Optimizer '%s' is not supported" % args.optimizer)
 
     for t in range(args.epochs):
+
+        print("Epoch %d/%d" % (t + 1, args.epochs))
 
         data_iterator = read_data_tensors(args.dataset_path, args.wv_path,
                                           batch_size=args.batch_size, maxlen=args.maxlen)
 
         for item_number, (x, texts) in enumerate(data_iterator):
 
-            print(x.shape)
             x = torch.from_numpy(x)
-
 
             # extracting bad samples from the very same batch; not sure if this is OK, so todo
             negative_samples = torch.stack(
@@ -87,13 +92,14 @@ if __name__ == "__main__":
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
+            # scheduler.step(epoch=t)
 
             if item_number % 1000 == 0:
 
-                print(item_number, "batches")
+                print(item_number, "batches, and LR:", optimizer.param_groups[0]['lr'])
 
                 for i, aspect in enumerate(model.get_aspect_words(w2v_model)):
-                    print(i + 1, " ".join(aspect))
+                    print(i + 1, " ".join(["%10s" % a for a in aspect]))
 
                 print("Loss:", loss.item())
                 print()
