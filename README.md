@@ -4,7 +4,7 @@ Yet another PyTorch implementation of the model described in the paper [**An Uns
 
 ## Example
 
-**For a working example of a whole pipeline please refer to `example_run.sh` **
+**For a working example of a whole pipeline please refer to `example_run.sh`**
 
 Let's get some data:
 
