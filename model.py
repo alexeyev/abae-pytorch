@@ -116,8 +116,7 @@ class ABAE(torch.nn.Module):
 
         positive_dot_products = torch.matmul(text_emb.unsqueeze(1), recovered_emb.unsqueeze(2)).squeeze()
         negative_dot_products = torch.matmul(averaged_negative_emb, recovered_emb.unsqueeze(2)).squeeze()
-        sum_negative_dot = torch.sum(negative_dot_products, dim=1)
-        reconstruction_triplet_loss = 1 - positive_dot_products + sum_negative_dot
+        reconstruction_triplet_loss = torch.sum(1 - positive_dot_products.unsqueeze(1) + negative_dot_products, dim=1)
 
         return reconstruction_triplet_loss
 
