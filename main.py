@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import numpy as np
 import torch
 from model import ABAE
 from reader import get_centroids, get_w2v, read_data_tensors
@@ -77,6 +78,8 @@ if __name__ == "__main__":
                                           batch_size=args.batch_size, maxlen=args.maxlen)
 
         for item_number, (x, texts) in enumerate(data_iterator):
+            if x.shape[0] < args.batch_size:  # pad with 0 if smaller than batch size
+                x = np.pad(x, ((0, args.batch_size - x.shape[0]), (0, 0), (0, 0)))
 
             x = torch.from_numpy(x)
 
