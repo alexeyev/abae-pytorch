@@ -3,4 +3,4 @@
 .idea
 *~
 *.w2v
-*.txt
+*.json*.txt

@@ -12,7 +12,7 @@ class Sentences(object):
         self.filename = filename
 
     def __iter__(self):
-        for line in tqdm(codecs.open(self.filename, "r", "utf-8")):
+        for line in tqdm(codecs.open(self.filename, "r", "utf-8"), self.filename):
             yield line.strip().split()
 
 

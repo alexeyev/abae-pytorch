@@ -1,13 +1,22 @@
 #!/usr/bin/env bash
 
-### this may take a while
+DATA_NAME=reviews_Electronics_5
 
-wget http://snap.stanford.edu/data/amazon/productGraph/categoryFiles/reviews_Electronics_5.json.gz
-gunzip reviews_Electronics_5.json.gz
-python3 custom_format_converter.py reviews_Electronics_5.json
+if [ ! -f ./$DATA_NAME.json.txt ]; then
+    echo "File not found! Downloading..."
 
-### data prepared, training word vectors
+    ### this may take a while
+    wget http://snap.stanford.edu/data/amazon/productGraph/categoryFiles/$DATA_NAME.json.gz
+    gunzip $DATA_NAME.json.gz
+    python3 custom_format_converter.py $DATA_NAME.json
+    rm $DATA_NAME.json.gz $DATA_NAME.json
+    mkdir word_vectors
+fi
 
-mkdir word_vectors
-python3 word2vec.py reviews_Electronics_5.json.txt
-python3 main.py -as 30 -d reviews_Electronics_5.json.txt
+if [ ! -f ./word_vectors/$DATA_NAME.json.txt.w2v ]; then
+    echo "Training custom word vectors..."
+    python3 word2vec.py $DATA_NAME.json.txt
+fi
+
+echo "Training ABAE..."
+python3 main.py -as 30 -d $DATA_NAME.json.txt
