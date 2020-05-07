@@ -6,13 +6,13 @@ from torch.nn.parameter import Parameter
 
 
 class SelfAttention(torch.nn.Module):
-    def __init__(self, wv_dim, maxlen):
+    def __init__(self, wv_dim: int, maxlen: int):
         super(SelfAttention, self).__init__()
         self.wv_dim = wv_dim
 
         # max sentence length -- batch 2nd dim size
         self.maxlen = maxlen
-        self.M = Parameter(torch.Tensor(wv_dim, wv_dim))
+        self.M = Parameter(torch.empty(size=(wv_dim, wv_dim)))
         init.kaiming_uniform(self.M.data)
 
         # softmax for attending to wod vectors
@@ -44,7 +44,8 @@ class ABAE(torch.nn.Module):
 
     """
 
-    def __init__(self, wv_dim=200, asp_count=30, ortho_reg=0.1, maxlen=201, init_aspects_matrix=None):
+    def __init__(self, wv_dim: int = 200, asp_count: int = 30,
+                 ortho_reg: float = 0.1, maxlen: int = 201, init_aspects_matrix=None):
         """
         Initializing the model
 
@@ -63,7 +64,7 @@ class ABAE(torch.nn.Module):
         self.attention = SelfAttention(wv_dim, maxlen)
         self.linear_transform = torch.nn.Linear(self.wv_dim, self.asp_count)
         self.softmax_aspects = torch.nn.Softmax()
-        self.aspects_embeddings = Parameter(torch.Tensor(wv_dim, asp_count))
+        self.aspects_embeddings = Parameter(torch.empty(size=(wv_dim, asp_count)))
 
         if init_aspects_matrix is None:
             torch.nn.init.xavier_uniform(self.aspects_embeddings)
@@ -80,8 +81,8 @@ class ABAE(torch.nn.Module):
 
         # multiplying text embeddings by attention scores -- and summing
         # (matmul: we sum every word embedding's coordinate with attention weights)
-        weighted_text_emb = torch.matmul(attention_weights.unsqueeze(1), # (batch, 1, sentence)
-                                         text_embeddings                 # (batch, sentence, wv_dim)
+        weighted_text_emb = torch.matmul(attention_weights.unsqueeze(1),  # (batch, 1, sentence)
+                                         text_embeddings  # (batch, sentence, wv_dim)
                                          ).squeeze()
 
         # encoding with a simple feed-forward layer (wv_dim) -> (aspects_count)

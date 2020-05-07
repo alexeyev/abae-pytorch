@@ -13,7 +13,6 @@ if __name__ == "__main__":
 
     parser.add_argument("--word-vectors-path", "-wv",
                         dest="wv_path", type=str, metavar='<str>',
-                        default="word_vectors/reviews_Electronics_5.json.txt.w2v",
                         help="path to word vectors file")
 
     parser.add_argument("--batch-size", "-b", dest="batch_size", type=int, default=50,
@@ -29,7 +28,7 @@ if __name__ == "__main__":
                         help="Epochs count")
 
     parser.add_argument("--optimizer", "-opt", dest="optimizer", type=str, default="adam", help="Optimizer",
-                        choices=["adam", "adagrad", "sgd"])
+                        choices=["adam", "sgd", "asgd", "adagrad"])
 
     parser.add_argument("--negative-samples", "-ns", dest="neg_samples", type=int, default=5,
                         help="Negative samples per positive one")
@@ -56,17 +55,14 @@ if __name__ == "__main__":
     optimizer = None
     scheduler = None
 
-    # if args.optimizer == "cycsgd":
-    #     optimizer = torch.optim.SGD(model.parameters(), lr=0.05, momentum=0.9)
-    #     scheduler = torch.optim.lr_scheduler.CyclicLR(optimizer, base_lr=1e-5, max_lr=0.05, mode="triangular2")
-    # elif args.optimizer == "adam":
-
     if args.optimizer == "adam":
         optimizer = torch.optim.Adam(model.parameters())
     elif args.optimizer == "sgd":
         optimizer = torch.optim.SGD(model.parameters(), lr=0.05)
     elif args.optimizer == "adagrad":
         optimizer = torch.optim.Adagrad(model.parameters())
+    elif args.optimizer == "asgd":
+        optimizer = torch.optim.ASGD(model.parameters(), lr=0.05)
     else:
         raise Exception("Optimizer '%s' is not supported" % args.optimizer)
 
@@ -95,14 +91,13 @@ if __name__ == "__main__":
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
-            # scheduler.step(epoch=t)
 
             if item_number % 1000 == 0:
 
                 print(item_number, "batches, and LR:", optimizer.param_groups[0]['lr'])
 
                 for i, aspect in enumerate(model.get_aspect_words(w2v_model)):
-                    print(i + 1, " ".join(["%10s" % a for a in aspect]))
+                    print(i + 1, " ".join([a for a in aspect]))
 
                 print("Loss:", loss.item())
                 print()

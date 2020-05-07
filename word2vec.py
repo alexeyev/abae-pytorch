@@ -8,11 +8,11 @@ from tqdm import tqdm
 
 
 class Sentences(object):
-    def __init__(self, filename):
+    def __init__(self, filename: str):
         self.filename = filename
 
     def __iter__(self):
-        for line in tqdm(codecs.open(self.filename, "r", "utf-8"), self.filename):
+        for line in tqdm(codecs.open(self.filename, "r", encoding="utf-8"), self.filename):
             yield line.strip().split()
 
 
