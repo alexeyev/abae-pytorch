@@ -57,11 +57,27 @@ For a working example of a whole pipeline please refer to `example_run.sh`
 
 I acknowledge the implementation is raw, code modification requests and issues are welcome.
 
+## Thanks for contributions
+[@alexdevmotion](https://github.com/alexdevmotion)
+
 ## TODOs
 
 * Evaluation: PMI, NPMI, LCP, L1/L2/coord/cosine (Nikolenko SIGIR'16), ...
 * Aspects prediction on text + visualization
 * Saving the model, aspects, etc.
+
+## How to cite
+
+Not neccessary, but greatly appreciated, if you use this work.
+
+```latex
+@misc{abaepytorch2019alekseev,
+  title     = {{alexeyev/abae-pytorch: ABAE, PyTorch implementation}},
+  year      = {2019},
+  url       = {https://github.com/alexeyev/abae-pytorch},
+  language  = {english}
+}
+```
 
 ## Please also see
 
