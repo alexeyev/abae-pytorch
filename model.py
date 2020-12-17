@@ -13,7 +13,7 @@ class SelfAttention(torch.nn.Module):
         # max sentence length -- batch 2nd dim size
         self.maxlen = maxlen
         self.M = Parameter(torch.empty(size=(wv_dim, wv_dim)))
-        init.kaiming_uniform(self.M.data)
+        init.kaiming_uniform_(self.M.data)
 
         # softmax for attending to wod vectors
         self.attention_softmax = torch.nn.Softmax()

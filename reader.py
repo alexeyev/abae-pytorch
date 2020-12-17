@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import gensim
 import numpy as np
-from sklearn.cluster.k_means_ import MiniBatchKMeans
+from sklearn.cluster import MiniBatchKMeans
 
 
 def read_data_batches(path, batch_size=50, minlength=5):

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 import torch
+
 from model import ABAE
 from reader import get_centroids, get_w2v, read_data_tensors
-
 
 if __name__ == "__main__":
 
@@ -38,6 +38,8 @@ if __name__ == "__main__":
 
     parser.add_argument("--maxlen", "-l", type=int, default=201,
                         help="Max length of the considered sentence; the rest is clipped if longer")
+
+    parser.add_argument("--output-file", "-o", type=str, default=None)
 
     args = parser.parse_args()
 
@@ -101,3 +103,11 @@ if __name__ == "__main__":
 
                 print("Loss:", loss.item())
                 print()
+
+                if args.output_dir:
+                    # checking saving-loading
+                    torch.save(model.state_dict(), args.output_file)
+                    model = ABAE(wv_dim=wv_dim,
+                                     asp_count=args.aspects_number,
+                                     init_aspects_matrix=get_centroids(w2v_model, aspects_count=args.aspects_number))
+                    model.load_state_dict(torch.load(args.output_dir))
