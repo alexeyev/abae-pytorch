@@ -1,0 +1,14 @@
+defaults:
+  - embeddings: word2vec-custom
+  - optimizers: adam
+
+data:
+  path: "reviews_Electronics_5.json.txt"
+
+model:
+  batch_size: 50
+  ortho_reg: 0.1
+  aspects_number: 40
+  epochs: 1
+  negative_samples: 5
+  max_len: 201
