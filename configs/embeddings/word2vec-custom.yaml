@@ -1,2 +1,2 @@
 name: word2vec-custom
-path: "word_vectors/reviews_Cell_Phones_and_Accessories_5.json.txt.w2v"
+path: word_vectors/reviews_Cell_Phones_and_Accessories_5.json.txt.w2v

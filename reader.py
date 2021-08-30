@@ -4,7 +4,7 @@ import numpy as np
 from sklearn.cluster import MiniBatchKMeans
 
 
-def read_data_batches(path, batch_size=50, minlength=5):
+def read_data_batches(path: str, batch_size: int=50, minlength: int=5):
     """
         Reading batched texts of given min. length
     :param path: path to the text file ``one line -- one normalized sentence''
@@ -26,7 +26,7 @@ def read_data_batches(path, batch_size=50, minlength=5):
         yield batch
 
 
-def text2vectors(text, w2v_model, maxlen, vocabulary):
+def text2vectors(text: list, w2v_model, maxlen: int, vocabulary):
     """
         Token sequence -- to a list of word vectors;
         if token not in vocabulary, it is skipped; the rest of
@@ -40,7 +40,7 @@ def text2vectors(text, w2v_model, maxlen, vocabulary):
     acc_vecs = []
 
     for word in text:
-        if word in w2v_model and (vocabulary is None or word in vocabulary):
+        if word in w2v_model.wv and (vocabulary is None or word in vocabulary):
             acc_vecs.append(w2v_model.wv[word])
 
     # padding for consistent length with ZERO vectors
@@ -94,11 +94,10 @@ def get_centroids(w2v_model, aspects_count):
     km = MiniBatchKMeans(n_clusters=aspects_count, verbose=0, n_init=100)
     m = []
 
-    for k in w2v_model.wv.vocab:
+    for k in w2v_model.wv.key_to_index:
         m.append(w2v_model.wv[k])
 
     m = np.matrix(m)
-
     km.fit(m)
     clusters = km.cluster_centers_
 

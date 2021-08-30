@@ -13,10 +13,10 @@ class SelfAttention(torch.nn.Module):
         # max sentence length -- batch 2nd dim size
         self.maxlen = maxlen
         self.M = Parameter(torch.empty(size=(wv_dim, wv_dim)))
-        init.kaiming_uniform(self.M.data)
+        init.kaiming_uniform_(self.M.data)
 
         # softmax for attending to wod vectors
-        self.attention_softmax = torch.nn.Softmax()
+        self.attention_softmax = torch.nn.Softmax(dim=-1)
 
     def forward(self, input_embeddings):
         # (b, wv, 1)
@@ -63,7 +63,7 @@ class ABAE(torch.nn.Module):
 
         self.attention = SelfAttention(wv_dim, maxlen)
         self.linear_transform = torch.nn.Linear(self.wv_dim, self.asp_count)
-        self.softmax_aspects = torch.nn.Softmax()
+        self.softmax_aspects = torch.nn.Softmax(dim=-1)
         self.aspects_embeddings = Parameter(torch.empty(size=(wv_dim, asp_count)))
 
         if init_aspects_matrix is None:
@@ -108,7 +108,9 @@ class ABAE(torch.nn.Module):
         reconstruction_triplet_loss = ABAE._reconstruction_loss(weighted_text_emb,
                                                                 recovered_emb,
                                                                 averaged_negative_samples)
-        max_margin = torch.max(reconstruction_triplet_loss, torch.zeros_like(reconstruction_triplet_loss))
+        max_margin = torch \
+            .max(reconstruction_triplet_loss, torch.zeros_like(reconstruction_triplet_loss)) \
+            .unsqueeze(dim=-1)
 
         return self.ortho * self._ortho_regularizer() + max_margin
 
@@ -126,7 +128,7 @@ class ABAE(torch.nn.Module):
             torch.matmul(self.aspects_embeddings.t(), self.aspects_embeddings) \
             - torch.eye(self.asp_count))
 
-    def get_aspect_words(self, w2v_model, topn=15):
+    def get_aspect_words(self, w2v_model, logger, topn=15):
         words = []
 
         # getting aspects embeddings
@@ -134,12 +136,12 @@ class ABAE(torch.nn.Module):
 
         # getting scalar products of word embeddings and aspect embeddings;
         # to obtain the ``probabilities'', one should also apply softmax
-        words_scores = w2v_model.wv.syn0.dot(aspects)
+        # words_scores = w2v_model.wv.syn0.dot(aspects)
+        words_scores = w2v_model.wv.vectors.dot(aspects)
 
         for row in range(aspects.shape[1]):
             argmax_scalar_products = np.argsort(- words_scores[:, row])[:topn]
-            # print([w2v_model.wv.index2word[i] for i in argmax_scalar_products])
-            # print([w for w, dist in w2v_model.similar_by_vector(aspects.T[row])[:topn]])
-            words.append([w2v_model.wv.index2word[i] for i in argmax_scalar_products])
+            # print([w for w, dist in w2v_model.wv.similar_by_vector(aspects.T[row])[:topn]])
+            words.append([w2v_model.wv.index_to_key[i] for i in argmax_scalar_products])
 
         return words

@@ -19,4 +19,5 @@ if [ ! -f ./word_vectors/$DATA_NAME.json.txt.w2v ]; then
 fi
 
 echo "Training ABAE..."
-python main.py -as 30 -d $DATA_NAME.json.txt -wv word_vectors/$DATA_NAME.json.txt.w2v
+echo "A working example is in progress... Please see 'main.py' code."
+#python main.py -as 30 -d $DATA_NAME.json.txt -wv word_vectors/$DATA_NAME.json.txt.w2v

@@ -1,14 +1,18 @@
 defaults:
   - embeddings: word2vec-custom
-  - optimizers: adam
+  - optimizer: adam
 
 data:
-  path: "reviews_Electronics_5.json.txt"
+  path: "reviews_Cell_Phones_and_Accessories_5.json.txt"
 
 model:
   batch_size: 50
-  ortho_reg: 0.1
-  aspects_number: 40
+  ortho_reg: 0.2
+  aspects_number: 25
   epochs: 1
   negative_samples: 5
   max_len: 201
+
+hydra:
+  run:
+    dir: . #results/sessions_${now:%Y-%m-%d}_${now:%H-%M-%S}

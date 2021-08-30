@@ -53,6 +53,6 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         path = sys.argv[1]
     else:
-        path = "reviews_Electronics_5.json"
+        path = "reviews_Cell_Phones_and_Accessories_5.json"
 
     read_amazon_format(path, sentence=True)
