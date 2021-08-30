@@ -1,6 +1,7 @@
 defaults:
   - embeddings: word2vec-custom
   - optimizer: adam
+  - _self_
 
 data:
   path: "reviews_Cell_Phones_and_Accessories_5.json.txt"
@@ -12,7 +13,8 @@ model:
   epochs: 1
   negative_samples: 5
   max_len: 201
+  log_progress_steps: 1000
 
 hydra:
   run:
-    dir: . #results/sessions_${now:%Y-%m-%d}_${now:%H-%M-%S}
+    dir: results/sessions_${now:%Y-%m-%d}_${now:%H-%M-%S}

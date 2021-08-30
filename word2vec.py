@@ -19,7 +19,7 @@ class Sentences(object):
 def main(path):
     sentences = Sentences(path)
     model = gensim.models.Word2Vec(sentences, vector_size=200, window=5, min_count=5, workers=7, sg=1,
-                                   negative=5, iter=1, max_vocab_size=20000)
+                                   negative=5, max_vocab_size=20000)
     model.save("word_vectors/" + path + ".w2v")
     # model.wv.save_word2vec_format("word_vectors/" + domain + ".txt", binary=False)
 

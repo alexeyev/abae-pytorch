@@ -4,6 +4,7 @@ import logging
 import hydra
 import numpy as np
 import torch
+import os
 
 from model import ABAE
 from reader import get_centroids, get_w2v, read_data_tensors
@@ -13,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 @hydra.main("configs", "config")
 def main(cfg):
-    w2v_model = get_w2v(cfg.embeddings.path)
+    w2v_model = get_w2v(os.path.join(hydra.utils.get_original_cwd(), cfg.embeddings.path))
     wv_dim = w2v_model.vector_size
     y = torch.zeros((cfg.model.batch_size, 1))
 
@@ -39,7 +40,8 @@ def main(cfg):
 
         logger.debug("Epoch %d/%d" % (t + 1, cfg.model.epochs))
 
-        data_iterator = read_data_tensors(cfg.data.path, cfg.embeddings.path,
+        data_iterator = read_data_tensors(os.path.join(hydra.utils.get_original_cwd(), cfg.data.path),
+                                          os.path.join(hydra.utils.get_original_cwd(), cfg.embeddings.path),
                                           batch_size=cfg.model.batch_size, maxlen=cfg.model.max_len)
 
         for item_number, (x, texts) in enumerate(data_iterator):
@@ -62,7 +64,7 @@ def main(cfg):
             loss.backward()
             optimizer.step()
 
-            if item_number % 1000 == 0:
+            if item_number % cfg.model.log_progress_steps == 0:
 
                 logger.info("%d batches, and LR: %.5f" % (item_number, optimizer.param_groups[0]['lr']))
 

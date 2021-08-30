@@ -2,7 +2,7 @@
 
 Yet another PyTorch implementation of the model described in the paper [**An Unsupervised Neural Attention Model for Aspect Extraction**](https://aclweb.org/anthology/papers/P/P17/P17-1036/) by He, Ruidan and  Lee, Wee Sun  and  Ng, Hwee Tou  and  Dahlmeier, Daniel, **ACL2017**.
 
-**NOTA BENE**: now `gensim>=4.0.0` and `hydra` are required.
+**NOTA BENE**: as of August 2021, `gensim>=4.1.0` and `hydra-core>=1.1.0` are required.
 
 ## Example
 
@@ -23,13 +23,12 @@ python3 word2vec.py reviews_Cell_Phones_and_Accessories_5.json.txt
 ```
 And run 
 
-**TODO**: running with hydra params example is in progress
 ```
-usage: main.py ...
-
+python main.py model.aspects_number=35 data.path=$DATA_NAME.json.txt model.log_progress_steps=1000
 ```
 
-For a working example of a whole pipeline please refer to `example_run.sh` 
+Please see all passable params in the `configs/` directory. For a working example of a whole pipeline 
+please refer to `example_run.sh` 
 
 I acknowledge the implementation is raw, code modification requests and issues are welcome.
 

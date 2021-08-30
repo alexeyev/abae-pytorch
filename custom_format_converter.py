@@ -13,7 +13,7 @@ lemmatizer = WordNetLemmatizer()
 stops = set(stopwords.words("english"))
 
 
-@lru_cache(1000000000)
+@lru_cache(maxsize=1000000000)
 def lemmatize(w: str):
     # caching the word-based lemmatizer to speed the process up
     return lemmatizer.lemmatize(w)
@@ -29,7 +29,7 @@ def read_amazon_format(path: str, sentence=True):
     """
     with open(path + ("" if sentence else "-full_text") + ".txt", "w+", encoding="utf-8") as wf:
 
-        for line in tqdm(open(path, "r", encoding="utf-8")):
+        for line in tqdm(open(path, "r", encoding="utf-8"), "normalizing texts read from [%s]" % path):
             # reading the text
             text = json.loads(line.strip())["reviewText"].replace("\n", " ")
             # splitting into sentences
