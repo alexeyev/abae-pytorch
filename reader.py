@@ -59,7 +59,7 @@ def get_w2v(path):
 
 def read_data_tensors(path, word_vectors_path=None,
                       batch_size=50, vocabulary=None,
-                      maxlen=100, pad_value=0, minsentlength=5):
+                      maxlen=100, pad_value=0, min_sent_length=5):
     """
         Data for training the NN -- from text file to word vectors sequences batches
     :param path:
@@ -73,7 +73,7 @@ def read_data_tensors(path, word_vectors_path=None,
     """
     w2v_model = get_w2v(word_vectors_path)
 
-    for batch in read_data_batches(path, batch_size, minsentlength):
+    for batch in read_data_batches(path, batch_size, min_sent_length):
         batch_vecs = []
         batch_texts = []
 

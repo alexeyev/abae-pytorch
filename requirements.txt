@@ -5,3 +5,4 @@ torchvision>=0.10.0
 scikit-learn>=0.24.2
 numpy>=1.21.2
 hydra-core>=1.1.1
+hydra-joblib-launcher>=1.1.5

@@ -1,6 +1,7 @@
 defaults:
   - embeddings: word2vec-custom
   - optimizer: adam
+  - override hydra/launcher: joblib
   - _self_
 
 data:
@@ -16,5 +17,14 @@ model:
   log_progress_steps: 1000
 
 hydra:
-  run:
-    dir: results/sessions_${now:%Y-%m-%d}_${now:%H-%M-%S}
+  job:
+    config:
+      override_dirname:
+        exclude_keys:
+          - model.log_progress_steps
+  sweep:
+    dir: results/${data.path}/
+    subdir: ${hydra.job.override_dirname}
+  help:
+    template:
+      "This is the script for training ABAE reimplemented in PyTorch"
