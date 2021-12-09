@@ -73,6 +73,11 @@ def main(cfg):
 
                 logger.info("Loss: %.4f" % loss.item())
 
+                try:
+                    torch.save(model, f"abae_%.2f_%06d.bin" % (loss.item(), item_number))
+                except Exception as e:
+                    logger.exception("Model saving failed.")
+
 
 if __name__ == "__main__":
     main()

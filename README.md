@@ -1,8 +1,10 @@
 # ABAE-PyTorch
 
-Yet another PyTorch implementation of the model described in the paper [**An Unsupervised Neural Attention Model for Aspect Extraction**](https://aclweb.org/anthology/papers/P/P17/P17-1036/) by He, Ruidan and  Lee, Wee Sun  and  Ng, Hwee Tou  and  Dahlmeier, Daniel, **ACL2017**.
+Yet another PyTorch implementation of the model described in the paper 
+[**An Unsupervised Neural Attention Model for Aspect Extraction**](https://aclweb.org/anthology/papers/P/P17/P17-1036/) 
+by He, Ruidan and  Lee, Wee Sun  and  Ng, Hwee Tou  and  Dahlmeier, Daniel, **ACL2017**.
 
-**NOTA BENE**: as of August 2021, `gensim>=4.1.0` and `hydra-core>=1.1.0` are required.
+**NOTA BENE**: as of December 2021, `gensim>=4.1.0` and `hydra-core>=1.1.0` are required.
 
 ## Example
 
@@ -43,7 +45,7 @@ I acknowledge the implementation is raw, code modification requests and issues a
 
 ## How to cite
 
-Not neccessary, but greatly appreciated, if you use this work.
+Greatly appreciated, if you use this work.
 
 ```latex
 @misc{abaepytorch2019alekseev,
