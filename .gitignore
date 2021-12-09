@@ -6,3 +6,4 @@
 *.json*.txt
 *.log
 .hydra
+outputs
