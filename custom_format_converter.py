@@ -27,18 +27,29 @@ def read_amazon_format(path: str, sentence=True):
     :param path: a path to a filename
     :param sentence: whether to split the reviews into sentences
     """
-    with open(path + ("" if sentence else "-full_text") + ".txt", "w+", encoding="utf-8") as wf:
-
-        for line in tqdm(open(path, "r", encoding="utf-8"), "normalizing texts read from [%s]" % path):
+    with open(
+        path + ("" if sentence else "-full_text") + ".txt", "w+", encoding="utf-8"
+    ) as wf:
+        for line in tqdm(
+            open(path, "r", encoding="utf-8"), "normalizing texts read from [%s]" % path
+        ):
             # reading the text
             text = json.loads(line.strip())["reviewText"].replace("\n", " ")
             # splitting into sentences
             sentences = sent_tokenize(text)
-            tokenized_sentences = [tokenizer.tokenize(sentence) for sentence in sentences]
+            tokenized_sentences = [
+                tokenizer.tokenize(sentence) for sentence in sentences
+            ]
 
             # removing stopwords and non-alphanumeric tokens
-            lemmatized_sentences = [[lemmatize(word) for word in s if not word in stops and str.isalpha(word)]
-                                    for s in tokenized_sentences]
+            lemmatized_sentences = [
+                [
+                    lemmatize(word)
+                    for word in s
+                    if word not in stops and str.isalpha(word)
+                ]
+                for s in tokenized_sentences
+            ]
 
             for sentence in lemmatized_sentences:
                 wf.write(" ".join(sentence) + "\n" if sentence else " ")

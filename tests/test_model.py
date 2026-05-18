@@ -27,9 +27,7 @@ def test_model_forward_loss_scalar(model, sample_batch):
 def test_orthogonality_penalty(model, sample_batch):
     sentence, negative = sample_batch
 
-    model.aspects_embeddings.data = torch.ones_like(
-        model.aspects_embeddings
-    )
+    model.aspects_embeddings.data = torch.ones_like(model.aspects_embeddings)
 
     loss = model(sentence, negative)
 

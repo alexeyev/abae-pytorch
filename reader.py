@@ -4,7 +4,7 @@ import numpy as np
 from sklearn.cluster import MiniBatchKMeans
 
 
-def read_data_batches(path: str, batch_size: int=50, minlength: int=5):
+def read_data_batches(path: str, batch_size: int = 50, minlength: int = 5):
     """
         Reading batched texts of given min. length
     :param path: path to the text file ``one line -- one normalized sentence''
@@ -52,14 +52,20 @@ def text2vectors(text: list, w2v_model, maxlen: int, vocabulary):
 
 def get_w2v(path):
     """
-        Reading word2vec model given the path
+    Reading word2vec model given the path
     """
     return gensim.models.Word2Vec.load(path)
 
 
-def read_data_tensors(path, word_vectors_path=None,
-                      batch_size=50, vocabulary=None,
-                      maxlen=100, pad_value=0, min_sent_length=5):
+def read_data_tensors(
+    path,
+    word_vectors_path=None,
+    batch_size=50,
+    vocabulary=None,
+    maxlen=100,
+    pad_value=0,
+    min_sent_length=5,
+):
     """
         Data for training the NN -- from text file to word vectors sequences batches
     :param path:
@@ -87,8 +93,8 @@ def read_data_tensors(path, word_vectors_path=None,
 
 def get_centroids(w2v_model, aspects_count):
     """
-        Clustering all word vectors with K-means and returning L2-normalizes
-        cluster centroids; used for ABAE aspects matrix initialization
+    Clustering all word vectors with K-means and returning L2-normalizes
+    cluster centroids; used for ABAE aspects matrix initialization
     """
 
     km = MiniBatchKMeans(n_clusters=aspects_count, verbose=0, n_init=100)
@@ -108,6 +114,9 @@ def get_centroids(w2v_model, aspects_count):
 
 
 if __name__ == "__main__":
-
-    for b in read_data_tensors("reviews_Electronics_5.json.txt", "word_vectors/reviews_Electronics_5.json.txt.w2v", batch_size=3):
+    for b in read_data_tensors(
+        "reviews_Electronics_5.json.txt",
+        "word_vectors/reviews_Electronics_5.json.txt.w2v",
+        batch_size=3,
+    ):
         print(b[0].shape, b[1][:2])
