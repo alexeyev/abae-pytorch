@@ -23,8 +23,6 @@ def main(cfg):
                  init_aspects_matrix=get_centroids(w2v_model, aspects_count=cfg.model.aspects_number))
     logger.debug(str(model))
 
-    criterion = torch.nn.MSELoss(reduction="sum")
-
     if cfg.optimizer.name == "adam":
         optimizer = torch.optim.Adam(model.parameters())
     elif cfg.optimizer.name == "sgd":
@@ -56,10 +54,7 @@ def main(cfg):
                        for _ in range(cfg.model.batch_size)]))
 
             # prediction
-            y_pred = model(x, negative_samples)
-
-            # error computation
-            loss = criterion(y_pred, y)
+            loss = model(x, negative_samples)
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()

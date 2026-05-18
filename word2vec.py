@@ -1,53 +1,36 @@
-# -*- coding: utf-8 -*-
+import logging
+import multiprocessing
+from pathlib import Path
 
-import codecs
-import sys
-
-import gensim
-from tqdm import tqdm
-
-
-class Sentences(object):
-    def __init__(self, filename: str):
-        self.filename = filename
-
-    def __iter__(self):
-        for line in tqdm(codecs.open(self.filename, "r", encoding="utf-8"), self.filename):
-            yield line.strip().split()
+from gensim.models import Word2Vec
+from gensim.models.word2vec import LineSentence
 
 
-def main(path):
-    sentences = Sentences(path)
-    model = gensim.models.Word2Vec(sentences, vector_size=200, window=5, min_count=5, workers=7, sg=1,
-                                   negative=5, max_vocab_size=20000)
-    model.save("word_vectors/" + path + ".w2v")
-    # model.wv.save_word2vec_format("word_vectors/" + domain + ".txt", binary=False)
+def train_word2vec(input_file, output_path="word_vectors/word2vec.model"):
+    output_dir = Path(output_path).parent
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    logging.basicConfig(
+        format="%(asctime)s : %(levelname)s : %(message)s",
+        level=logging.INFO,
+    )
+
+    sentences = LineSentence(input_file)
+
+    model = Word2Vec(
+        sentences,
+        vector_size=300,
+        window=10,
+        min_count=5,
+        workers=multiprocessing.cpu_count(),
+    )
+
+    model.save(output_path)
+
+    logging.info(f"Word2Vec model saved to {output_path}")
 
 
 if __name__ == "__main__":
+    import sys
 
-    if len(sys.argv) > 1:
-        path = sys.argv[1]
-    else:
-        path = "reviews_Cell_Phones_and_Accessories_5.json.txt"
-
-    try:
-        import os
-
-        os.mkdir("word_vectors/")
-    except:
-        pass
-
-    print("Training w2v on dataset", path)
-
-    main(path)
-
-    print("Training done.")
-
-    model = gensim.models.Word2Vec.load("word_vectors/" + path + ".w2v")
-
-    for word in ["he", "love", "looks", "buy", "laptop"]:
-        if word in model.wv.vocab:
-            print(word, [w for w, c in model.wv.similar_by_word(word=word)])
-        else:
-            print(word, "not in vocab")
+    train_word2vec(sys.argv[1])

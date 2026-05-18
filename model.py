@@ -67,7 +67,7 @@ class ABAE(torch.nn.Module):
         self.aspects_embeddings = Parameter(torch.empty(size=(wv_dim, asp_count)))
 
         if init_aspects_matrix is None:
-            torch.nn.init.xavier_uniform(self.aspects_embeddings)
+            torch.nn.init.xavier_uniform_(self.aspects_embeddings)
         else:
             self.aspects_embeddings.data = torch.from_numpy(init_aspects_matrix.T)
 
