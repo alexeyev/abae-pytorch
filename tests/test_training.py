@@ -40,9 +40,9 @@ def test_training_loop_runs(args, word_embeddings):
 
 
 def test_model_save_and_reload(
-    args,
-    word_embeddings,
-    tmp_path,
+        args,
+        word_embeddings,
+        tmp_path,
 ):
     model = ABAE(args, word_embeddings)
 
@@ -55,19 +55,16 @@ def test_model_save_and_reload(
     new_model.load_state_dict(torch.load(path))
 
     for p1, p2 in zip(
-        model.parameters(),
-        new_model.parameters(),
+            model.parameters(),
+            new_model.parameters(),
     ):
         assert torch.allclose(p1, p2)
 
 
 def test_attention_forward(model, sample_batch):
     sentence, _ = sample_batch
-
     embeddings = model.word_embeddings(sentence)
-
     output = model.self_attention(embeddings)
-
     assert output.shape == (
         sentence.size(0),
         model.aspect_num,

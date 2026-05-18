@@ -45,12 +45,12 @@ class ABAE(torch.nn.Module):
     """
 
     def __init__(
-        self,
-        wv_dim: int = 200,
-        asp_count: int = 30,
-        ortho_reg: float = 0.1,
-        maxlen: int = 201,
-        init_aspects_matrix=None,
+            self,
+            wv_dim: int = 200,
+            asp_count: int = 30,
+            ortho_reg: float = 0.1,
+            maxlen: int = 201,
+            init_aspects_matrix=None,
     ):
         """
         Initializing the model

@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 import logging
+import os
 
 import hydra
 import numpy as np
 import torch
-import os
 
 from model import ABAE
 from reader import get_centroids, get_w2v, read_data_tensors
@@ -52,7 +52,7 @@ def main(cfg):
 
         for item_number, (x, texts) in enumerate(data_iterator):
             if (
-                x.shape[0] < cfg.model.batch_size
+                    x.shape[0] < cfg.model.batch_size
             ):  # pad with 0 if smaller than batch size
                 x = np.pad(x, ((0, cfg.model.batch_size - x.shape[0]), (0, 0), (0, 0)))
 

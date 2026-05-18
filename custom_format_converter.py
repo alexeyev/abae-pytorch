@@ -28,10 +28,10 @@ def read_amazon_format(path: str, sentence=True):
     :param sentence: whether to split the reviews into sentences
     """
     with open(
-        path + ("" if sentence else "-full_text") + ".txt", "w+", encoding="utf-8"
+            path + ("" if sentence else "-full_text") + ".txt", "w+", encoding="utf-8"
     ) as wf:
         for line in tqdm(
-            open(path, "r", encoding="utf-8"), "normalizing texts read from [%s]" % path
+                open(path, "r", encoding="utf-8"), "normalizing texts read from [%s]" % path
         ):
             # reading the text
             text = json.loads(line.strip())["reviewText"].replace("\n", " ")
