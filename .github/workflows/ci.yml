@@ -1,8 +1,10 @@
 name: CI
 
 on:
-  push: [main, master, modernization]
-  pull_request: [main, master]
+  push:
+    branches: [main, master, modernization]
+  pull_request:
+    branches: [main, master]
 
 jobs:
   test:
